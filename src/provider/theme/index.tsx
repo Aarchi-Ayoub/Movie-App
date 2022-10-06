@@ -1,7 +1,9 @@
 import React, {createContext, useEffect, useState} from 'react';
-import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
+import {SafeAreaView, useColorScheme} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {flexPage} from '../../common/styles/styles';
+
+import {flexPage} from 'styles/styles';
+import {getTheme, storeTheme} from 'utils/AsyncStorage';
 
 export const AppThemeContext = createContext<any>(null);
 
@@ -10,11 +12,19 @@ const AppThemeProvider: React.FC = ({children}) => {
   const [isDark, setIsDark] = useState<boolean>(useColorScheme() === 'dark');
 
   useEffect(() => {
+    (async () => {
+      const t = await getTheme();
+      setIsDark(t === 'dark');
+    })();
+  }, []);
+
+  useEffect(() => {
     isDark ? setTheme('dark') : setTheme('light');
   }, [isDark]);
 
   const changeTheme = (): void => {
     setIsDark(!isDark);
+    isDark ? storeTheme('light') : storeTheme('dark');
   };
 
   const backgroundStyle = {
@@ -28,16 +38,7 @@ const AppThemeProvider: React.FC = ({children}) => {
   return (
     <AppThemeContext.Provider
       value={{theme, isDark, changeTheme, backgroundStyle, textColorStyle}}>
-      <SafeAreaView style={backgroundStyle}>
-        {isDark && (
-          <StatusBar
-            backgroundColor={'#5E8D48'}
-            translucent
-            barStyle={'light-content'}
-          />
-        )}
-        {children}
-      </SafeAreaView>
+      <SafeAreaView style={backgroundStyle}>{children}</SafeAreaView>
     </AppThemeContext.Provider>
   );
 };
