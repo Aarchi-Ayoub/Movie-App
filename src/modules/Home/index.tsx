@@ -1,12 +1,14 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {View, Text, Image, Animated, Easing} from 'react-native';
+import React from 'react';
+import {View, Text, Animated, Easing, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 // styles
 import {flexPage} from '../../common/styles/styles';
 import {styles} from './styles';
 
 export default props => {
-  // Local state
+  // Local variables
   const spinValue = new Animated.Value(0);
+  const navigation = useNavigation();
 
   // First set up animation
   Animated.loop(
@@ -29,16 +31,20 @@ export default props => {
       <Text style={styles.title}>Home</Text>
       <View style={styles.content}>
         <View style={styles.raccourci}>
-          <Animated.Image
-            style={[
-              styles.img,
-              {
-                transform: [{rotate: spin}],
-              },
-            ]}
-            resizeMode="contain"
-            source={require('../../common/assets/settings.png')}
-          />
+          <TouchableOpacity
+            style={styles.settingTouch}
+            onPress={() => navigation.navigate('Settings')}>
+            <Animated.Image
+              style={[
+                styles.settingImg,
+                {
+                  transform: [{rotate: spin}],
+                },
+              ]}
+              resizeMode="contain"
+              source={require('../../common/assets/settings.png')}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
