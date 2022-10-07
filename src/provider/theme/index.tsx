@@ -1,5 +1,6 @@
 import React, {createContext, useEffect, useState} from 'react';
-import {SafeAreaView, useColorScheme} from 'react-native';
+import {StatusBar, useColorScheme} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import {flexPage} from 'styles/styles';
@@ -27,18 +28,21 @@ const AppThemeProvider: React.FC = ({children}) => {
     isDark ? storeTheme('light') : storeTheme('dark');
   };
 
-  const backgroundStyle = {
-    ...flexPage,
-    backgroundColor: isDark ? Colors.darker : Colors.lighter,
+  const textColorStyle: object = {
+    color: isDark ? Colors.lighter : Colors.darker,
   };
 
-  const textColorStyle = {
-    color: !isDark ? Colors.darker : Colors.lighter,
+  let backgroundStyle: object = {
+    ...flexPage,
+    backgroundColor: isDark ? Colors.darker : Colors.lighter,
   };
   return (
     <AppThemeContext.Provider
       value={{theme, isDark, changeTheme, backgroundStyle, textColorStyle}}>
-      <SafeAreaView style={backgroundStyle}>{children}</SafeAreaView>
+      <SafeAreaView style={backgroundStyle}>
+        <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+        {children}
+      </SafeAreaView>
     </AppThemeContext.Provider>
   );
 };
