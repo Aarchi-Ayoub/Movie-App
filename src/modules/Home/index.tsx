@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {flexPage} from '../../common/styles/styles';
 import {styles} from './styles';
 import {AppThemeContext} from '../../provider/theme';
+import SearchBar from '../../components/SearchBar';
 
 export default props => {
   // Context values
@@ -55,6 +56,7 @@ export default props => {
             />
           </TouchableOpacity>
         </View>
+        <SearchBar />
       </View>
     </View>
   );

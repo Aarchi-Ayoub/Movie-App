@@ -9,7 +9,7 @@ export const styles = ScaledSheet.create({
   },
   content: {
     flexGrow: 1,
-    borderWidth: 1,
+    // borderWidth: 1,
   },
   raccourci: {
     alignItems: 'flex-end',
