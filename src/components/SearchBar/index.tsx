@@ -15,6 +15,9 @@ export default props => {
   const typeTitle = (val: string): void => setTitle(val);
 
   const clearField = (): void => setTitle(null);
+
+  const searchTitle = (): void => console.log('cc');
+
   return (
     <View style={styles.content}>
       <TextInput
@@ -25,8 +28,10 @@ export default props => {
         onChangeText={typeTitle}
         autoCorrect={false}
         clearButtonMode={'while-editing'}
+        returnKeyType="search"
+        onSubmitEditing={searchTitle}
       />
-      {Platform.OS === 'ios' && title?.length && (
+      {Platform.OS === 'android' && title?.length && (
         <TouchableOpacity style={styles.clearAnd} onPress={clearField}>
           <Image
             resizeMode="contain"
