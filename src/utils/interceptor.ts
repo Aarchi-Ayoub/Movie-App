@@ -4,7 +4,7 @@ import Config from 'react-native-config';
 const API = Config.API_URL || '';
 
 const client = axios.create({
-  baseURL: 'https://www.omdbapi.com',
+  baseURL: API,
 });
 
 const token = '';
