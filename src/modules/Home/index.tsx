@@ -1,19 +1,64 @@
-import React, {useContext} from 'react';
-import {View, Text, Animated, Easing, TouchableOpacity} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {
+  View,
+  Text,
+  Animated,
+  Easing,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Config from 'react-native-config';
 // styles
 import {flexPage} from '../../common/styles/styles';
 import {styles} from './styles';
+// Context
 import {AppThemeContext} from '../../provider/theme';
+// Comp
 import SearchBar from '../../components/SearchBar';
+// utils
+import {request} from '../../utils/interceptor';
+import {useQuery} from 'react-query';
+import axios from 'axios';
 
 export default props => {
   // Context values
   const {backgroundStyle, isDark} = useContext(AppThemeContext);
 
-  // Local variables
+  /** Local */
+  //Variables
   const spinValue = new Animated.Value(0);
+  //Hooks
   const navigation = useNavigation();
+  //State
+  const [title, setTitle] = useState<string | null>(null);
+  /** Local */
+
+  /** Input actions */
+  const typeTitle = (val: string): void => setTitle(val);
+  const clearField = (): void => setTitle(null);
+  const searchTitle = (): void => console.log('cc');
+  /** Input actions */
+
+  // Navigation action
+  const navigate = (): void => navigation.navigate('Settings');
+
+  // Fetch data
+  const fetchMovies = async (): Promise<any> => {
+    if (title) {
+      return request({url: `/?apikey=${Config.APIKEY}&t=${title}`});
+    } else {
+      return request({url: `/?apikey=${Config.APIKEY}`});
+    }
+  };
+  // Query
+  const {data, isError, error, isLoading} = useQuery('fetch-movies', () =>
+    fetchMovies(),
+  );
+
+  console.log('===============data=====================');
+  console.log(data);
+  console.log('===============data=====================');
 
   // First set up animation
   Animated.loop(
@@ -30,9 +75,6 @@ export default props => {
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
-
-  // Navigation action
-  const navigate = (): void => navigation.navigate('Settings');
 
   return (
     <View style={[flexPage, backgroundStyle]}>
@@ -56,7 +98,13 @@ export default props => {
             />
           </TouchableOpacity>
         </View>
-        <SearchBar />
+        <SearchBar
+          value={title}
+          onChange={typeTitle}
+          onClear={clearField}
+          onSubmit={searchTitle}
+        />
+        <ScrollView contentContainerStyle={styles.scroll}></ScrollView>
       </View>
     </View>
   );
