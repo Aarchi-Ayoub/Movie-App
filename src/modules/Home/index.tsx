@@ -18,6 +18,7 @@ import {styles} from './styles';
 import {AppThemeContext} from '../../provider/theme';
 // Comp
 import SearchBar from '../../components/SearchBar';
+import Loader from '../../components/Loader';
 // utils
 import {request} from '../../utils/interceptor';
 
@@ -59,7 +60,7 @@ export default () => {
   );
 
   console.log('===============data=====================');
-  console.log({data, isError, error, isLoading});
+  console.log(data?.data);
   console.log('===============data=====================');
 
   // First set up animation
@@ -118,7 +119,9 @@ export default () => {
           onClear={clearField}
           onSubmit={searchTitle}
         />
-        <ScrollView contentContainerStyle={styles.scroll}></ScrollView>
+        <ScrollView contentContainerStyle={styles.scroll}>
+          <Loader />
+        </ScrollView>
       </View>
       {isError && FlashMessageComponent()}
       <FlashMessage
