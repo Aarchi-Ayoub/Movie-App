@@ -8,7 +8,9 @@ import {
   ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {useQuery} from 'react-query';
 import Config from 'react-native-config';
+import FlashMessage, {showMessage} from 'react-native-flash-message';
 // styles
 import {flexPage} from '../../common/styles/styles';
 import {styles} from './styles';
@@ -18,10 +20,8 @@ import {AppThemeContext} from '../../provider/theme';
 import SearchBar from '../../components/SearchBar';
 // utils
 import {request} from '../../utils/interceptor';
-import {useQuery} from 'react-query';
-import axios from 'axios';
 
-export default props => {
+export default () => {
   // Context values
   const {backgroundStyle, isDark} = useContext(AppThemeContext);
 
@@ -57,7 +57,7 @@ export default props => {
   );
 
   console.log('===============data=====================');
-  console.log(data);
+  console.log({data, isError, error, isLoading});
   console.log('===============data=====================');
 
   // First set up animation
@@ -76,9 +76,21 @@ export default props => {
     outputRange: ['0deg', '360deg'],
   });
 
+  const FlashMessageComponent = (): void => {
+    if (!isError) {
+      return;
+    }
+    showMessage({
+      message: 'Error message',
+      type: 'danger',
+      description: error?.message || '',
+      textStyle: {fontWeight: 'bold'},
+    });
+  };
   return (
     <View style={[flexPage, backgroundStyle]}>
       <Text style={styles.title}>Home</Text>
+
       <View style={styles.content}>
         <View style={styles.raccourci}>
           <TouchableOpacity style={styles.settingTouch} onPress={navigate}>
@@ -106,6 +118,13 @@ export default props => {
         />
         <ScrollView contentContainerStyle={styles.scroll}></ScrollView>
       </View>
+      {isError && FlashMessageComponent()}
+      <FlashMessage
+        position="bottom"
+        animationDuration={1000}
+        autoHide={false}
+        icon="danger"
+      />
     </View>
   );
 };

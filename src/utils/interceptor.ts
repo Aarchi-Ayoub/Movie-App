@@ -12,7 +12,9 @@ const token = '';
 export const request = ({...options}): Promise<Object> => {
   client.defaults.headers.common.Authorization = `Bearer ${token}`;
   const onSuccess = (response: any) => response;
-  const onError = (error: any) => error;
+  const onError = (error: any) => {
+    throw Error(error);
+  };
 
   console.log('====================================');
   console.log('URL ==> ', API + options.url);
