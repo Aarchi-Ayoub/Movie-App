@@ -1,38 +1,29 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Platform,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import React from 'react';
+import {View, TextInput, Platform, TouchableOpacity, Image} from 'react-native';
 import {styles} from './styles';
 
-export default props => {
-  const [title, setTitle] = useState<string | null>(null);
-
-  const typeTitle = (val: string): void => setTitle(val);
-
-  const clearField = (): void => setTitle(null);
-
-  const searchTitle = (): void => console.log('cc');
-
+type Props = {
+  value: string | null;
+  onChange: any;
+  onClear: any;
+  onSubmit: any;
+};
+export default ({value, onChange, onClear, onSubmit}: Props) => {
   return (
     <View style={styles.content}>
       <TextInput
         style={styles.input}
-        value={title || ''}
+        value={value || ''}
         maxLength={25}
         placeholder={'Movie title..'}
-        onChangeText={typeTitle}
+        onChangeText={onChange}
         autoCorrect={false}
         clearButtonMode={'while-editing'}
         returnKeyType="search"
-        onSubmitEditing={searchTitle}
+        onSubmitEditing={onSubmit}
       />
-      {Platform.OS === 'android' && title?.length && (
-        <TouchableOpacity style={styles.clearAnd} onPress={clearField}>
+      {Platform.OS === 'android' && value?.length && (
+        <TouchableOpacity style={styles.clearAnd} onPress={onClear}>
           <Image
             resizeMode="contain"
             style={styles.clearImg}
