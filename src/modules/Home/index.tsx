@@ -24,7 +24,7 @@ import {request} from '../../utils/interceptor';
 // Fetch data
 const fetchMovies = async (title: string | null): Promise<any> => {
   if (title) {
-    return request({url: `/?apikey=${Config.APIKEY}&t=${title}`});
+    return request({url: `/?apikey=${Config.APIKEY}&s=${title}`});
   } else {
     return request({url: `/?apikey=${Config.APIKEY}`});
   }
