@@ -21,6 +21,15 @@ import SearchBar from '../../components/SearchBar';
 // utils
 import {request} from '../../utils/interceptor';
 
+// Fetch data
+const fetchMovies = async (title: string | null): Promise<any> => {
+  if (title) {
+    return request({url: `/?apikey=${Config.APIKEY}&t=${title}`});
+  } else {
+    return request({url: `/?apikey=${Config.APIKEY}`});
+  }
+};
+
 export default () => {
   // Context values
   const {backgroundStyle, isDark} = useContext(AppThemeContext);
@@ -43,17 +52,10 @@ export default () => {
   // Navigation action
   const navigate = (): void => navigation.navigate('Settings');
 
-  // Fetch data
-  const fetchMovies = async (): Promise<any> => {
-    if (title) {
-      return request({url: `/?apikey=${Config.APIKEY}&t=${title}`});
-    } else {
-      return request({url: `/?apikey=${Config.APIKEY}`});
-    }
-  };
   // Query
-  const {data, isError, error, isLoading} = useQuery('fetch-movies', () =>
-    fetchMovies(),
+  const {data, isError, error, isLoading}: any = useQuery(
+    ['fetch-movies', title],
+    () => fetchMovies(title),
   );
 
   console.log('===============data=====================');
