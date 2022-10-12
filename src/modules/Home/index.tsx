@@ -133,9 +133,18 @@ export default () => {
       textStyle: {fontWeight: 'bold'},
     });
   };
+
   //Movie render
   const renderItemComp = ({item}: any) => {
     return <Poster movie={item} />;
+  };
+
+  //Empty render
+  const renderEmptyComp = () => {
+    if (title === null || data?.data.Error === 'Incorrect IMDb ID.') {
+      return <View />;
+    }
+    return <Text style={styles.error}>{data?.data?.Error}</Text>;
   };
 
   return (
@@ -158,6 +167,7 @@ export default () => {
         }}
         onEndReachedThreshold={0.5}
         onEndReached={() => setPage(page + 1)}
+        ListEmptyComponent={renderEmptyComp}
       />
 
       {isError && FlashMessageComponent()}

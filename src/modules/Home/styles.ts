@@ -33,4 +33,9 @@ export const styles = ScaledSheet.create({
     width: '10@s',
     height: '10@vs',
   },
+  error: {
+    color: 'red',
+    fontStyle: 'italic',
+    fontSize: '12@ms',
+  },
 });
