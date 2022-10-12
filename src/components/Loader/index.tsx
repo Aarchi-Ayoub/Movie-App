@@ -1,4 +1,4 @@
-import React, {ReactChild, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Animated, View} from 'react-native';
 import {styles} from './styles';
 
@@ -11,9 +11,14 @@ export default () => {
     four: useRef(new Animated.Value(0)).current,
     five: useRef(new Animated.Value(0)).current,
   };
+
   //Balls names
   let keyNames = Object.keys(Animations);
 
+  //State
+  const [repeat, setRepeat] = useState<boolean>(false);
+
+  //Animations
   const onAnimate = (animation: any, nextAnimation: any): void => {
     Animated.sequence([
       Animated.timing(animation, {
@@ -47,13 +52,13 @@ export default () => {
       onAnimate(Animations.four, fifthAnimation);
     }
     function fifthAnimation(): void {
-      onAnimate(Animations.five, () => {});
+      onAnimate(Animations.five, () => setRepeat(!repeat));
     }
   };
 
   useEffect(() => {
     onStartAnimate();
-  }, []);
+  }, [repeat]);
 
   // Balls render
   const ballRender = (): JSX => {
@@ -65,32 +70,6 @@ export default () => {
         />
       );
     });
-    // for (let name in Animations) {
-    //   return (
-    //     <Animated.View
-    //       style={[styles.ball, {transform: [{translateY: Animations[name]}]}]}
-    //     />
-    //   );
-    // }
   };
-  return (
-    <View style={styles.container}>
-      {ballRender()}
-      {/* <Animated.View
-        style={[styles.ball, {transform: [{translateY: Animations.one}]}]}
-      />
-      <Animated.View
-        style={[styles.ball, {transform: [{translateY: Animations.two}]}]}
-      />
-      <Animated.View
-        style={[styles.ball, {transform: [{translateY: Animations.three}]}]}
-      />
-      <Animated.View
-        style={[styles.ball, {transform: [{translateY: Animations.four}]}]}
-      />
-      <Animated.View
-        style={[styles.ball, {transform: [{translateY: Animations.five}]}]}
-      /> */}
-    </View>
-  );
+  return <View style={styles.container}>{ballRender()}</View>;
 };

@@ -9,9 +9,9 @@ export const styles = ScaledSheet.create({
   },
   ball: {
     backgroundColor: 'tomato',
-    height: '20@ms',
-    width: '20@ms',
-    borderRadius: '20@ms',
+    height: '10@ms',
+    width: '10@ms',
+    borderRadius: '10@ms',
     marginRight: '5@s',
   },
 });
