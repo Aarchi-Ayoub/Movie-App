@@ -24,9 +24,12 @@ import {Poster} from '../../components/Poster';
 import {request} from '../../utils/interceptor';
 
 // Fetch data
-const fetchMovies = async (title: string | null): Promise<any> => {
+const fetchMovies = async (
+  title: string | null,
+  page: number,
+): Promise<any> => {
   if (title) {
-    return request({url: `/?apikey=${Config.APIKEY}&s=${title}`});
+    return request({url: `/?apikey=${Config.APIKEY}&s=${title}&page=${page}`});
   } else {
     return request({url: `/?apikey=${Config.APIKEY}`});
   }
@@ -43,11 +46,16 @@ export default () => {
   const navigation = useNavigation();
   //State
   const [title, setTitle] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+
   /** Local */
 
   /** Input actions */
   const typeTitle = (val: string): void => setTitle(val);
-  const clearField = (): void => setTitle(null);
+  const clearField = (): void => {
+    setTitle(null);
+    setPage(0);
+  };
   const searchTitle = (): void => console.log('cc');
   /** Input actions */
 
@@ -56,8 +64,8 @@ export default () => {
 
   // Query
   const {data, isError, error, isLoading}: any = useQuery(
-    ['fetch-movies', title],
-    () => fetchMovies(title),
+    ['fetch-movies', title, page],
+    () => fetchMovies(title, page),
   );
 
   /** Settings */
@@ -148,6 +156,8 @@ export default () => {
         ItemSeparatorComponent={() => {
           return <View style={styles.separator} />;
         }}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => setPage(page + 1)}
       />
 
       {isError && FlashMessageComponent()}
