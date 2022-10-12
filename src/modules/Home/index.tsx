@@ -5,7 +5,7 @@ import {
   Animated,
   Easing,
   TouchableOpacity,
-  ScrollView,
+  FlatList,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useQuery} from 'react-query';
@@ -19,6 +19,7 @@ import {AppThemeContext} from '../../provider/theme';
 // Comp
 import SearchBar from '../../components/SearchBar';
 import Loader from '../../components/Loader';
+import {Poster} from '../../components/Poster';
 // utils
 import {request} from '../../utils/interceptor';
 
@@ -59,10 +60,7 @@ export default () => {
     () => fetchMovies(title),
   );
 
-  console.log('===============data=====================');
-  console.log(data?.data);
-  console.log('===============data=====================');
-
+  /** Settings */
   // First set up animation
   Animated.loop(
     Animated.timing(spinValue, {
@@ -78,7 +76,44 @@ export default () => {
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
+  // Setting comp
+  const settingSection = () => {
+    return (
+      <View style={styles.raccourci}>
+        <TouchableOpacity style={styles.settingTouch} onPress={navigate}>
+          <Animated.Image
+            style={[
+              styles.settingImg,
+              {
+                transform: [{rotate: spin}],
+              },
+            ]}
+            resizeMode="contain"
+            source={
+              isDark
+                ? require('common/assets/settingsWhite.png')
+                : require('common/assets/settings.png')
+            }
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  /** Settings */
 
+  // Search comp
+  const searchSection = () => {
+    return (
+      <SearchBar
+        value={title}
+        onChange={typeTitle}
+        onClear={clearField}
+        onSubmit={searchTitle}
+      />
+    );
+  };
+
+  //Error Message
   const FlashMessageComponent = (): void => {
     if (!isError) {
       return;
@@ -90,39 +125,31 @@ export default () => {
       textStyle: {fontWeight: 'bold'},
     });
   };
+  //Movie render
+  const renderItemComp = ({item}: any) => {
+    return <Poster movie={item} />;
+  };
+
   return (
     <View style={[flexPage, backgroundStyle]}>
       <Text style={styles.title}>Home</Text>
 
-      <View style={styles.content}>
-        <View style={styles.raccourci}>
-          <TouchableOpacity style={styles.settingTouch} onPress={navigate}>
-            <Animated.Image
-              style={[
-                styles.settingImg,
-                {
-                  transform: [{rotate: spin}],
-                },
-              ]}
-              resizeMode="contain"
-              source={
-                isDark
-                  ? require('common/assets/settingsWhite.png')
-                  : require('common/assets/settings.png')
-              }
-            />
-          </TouchableOpacity>
-        </View>
-        <SearchBar
-          value={title}
-          onChange={typeTitle}
-          onClear={clearField}
-          onSubmit={searchTitle}
-        />
-        <ScrollView contentContainerStyle={styles.scroll}>
-          <Loader />
-        </ScrollView>
-      </View>
+      {settingSection()}
+
+      {searchSection()}
+
+      {isLoading && <Loader />}
+      <FlatList
+        extraData={data?.data}
+        data={data?.data?.Search}
+        style={styles.list}
+        keyExtractor={({imdbID}) => imdbID}
+        renderItem={renderItemComp}
+        ItemSeparatorComponent={() => {
+          return <View style={styles.separator} />;
+        }}
+      />
+
       {isError && FlashMessageComponent()}
       <FlashMessage
         position="bottom"

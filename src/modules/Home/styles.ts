@@ -8,7 +8,7 @@ export const styles = ScaledSheet.create({
     textAlign: 'center',
   },
   content: {
-    flexGrow: 1,
+    // flex: 1,
   },
   raccourci: {
     alignItems: 'flex-end',
@@ -24,9 +24,13 @@ export const styles = ScaledSheet.create({
     width: '50@s',
     height: '50@vs',
   },
-  scroll: {
+  list: {
     flexGrow: 1,
-    borderWidth: 1,
     paddingHorizontal: '28@s',
+    padding: '15@ms',
+  },
+  separator: {
+    width: '10@s',
+    height: '10@vs',
   },
 });
