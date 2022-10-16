@@ -1,16 +1,9 @@
 import React, {useContext, useState} from 'react';
-import {
-  View,
-  Text,
-  Animated,
-  Easing,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {View, Text, FlatList} from 'react-native';
 import {useQuery} from 'react-query';
 import Config from 'react-native-config';
 import FlashMessage, {showMessage} from 'react-native-flash-message';
+
 // styles
 import {flexPage} from '../../common/styles/styles';
 import {styles} from './styles';
@@ -22,6 +15,7 @@ import Loader from '../../components/Loader';
 import {Poster} from '../../components/Poster';
 // utils
 import {request} from '../../utils/interceptor';
+import Settings from '../../components/Settings';
 
 // Fetch data
 const fetchMovies = async (
@@ -40,10 +34,7 @@ export default () => {
   const {backgroundStyle, isDark} = useContext(AppThemeContext);
 
   /** Local */
-  //Variables
-  const spinValue = new Animated.Value(0);
-  //Hooks
-  const navigation = useNavigation();
+
   //State
   const [title, setTitle] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
@@ -59,55 +50,11 @@ export default () => {
   const searchTitle = (): void => console.log('cc');
   /** Input actions */
 
-  // Navigation action
-  const navigate = (): void => navigation.navigate('Settings');
-
   // Query
   const {data, isError, error, isLoading}: any = useQuery(
     ['fetch-movies', title, page],
     () => fetchMovies(title, page),
   );
-
-  /** Settings */
-  // First set up animation
-  Animated.loop(
-    Animated.timing(spinValue, {
-      toValue: 1,
-      duration: 3000,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }),
-  ).start();
-
-  // Next, interpolate beginning and end values (in this case 0 and 1)
-  const spin = spinValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
-  // Setting comp
-  const settingSection = () => {
-    return (
-      <View style={styles.raccourci}>
-        <TouchableOpacity style={styles.settingTouch} onPress={navigate}>
-          <Animated.Image
-            style={[
-              styles.settingImg,
-              {
-                transform: [{rotate: spin}],
-              },
-            ]}
-            resizeMode="contain"
-            source={
-              isDark
-                ? require('common/assets/settingsWhite.png')
-                : require('common/assets/settings.png')
-            }
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  };
-  /** Settings */
 
   // Search comp
   const searchSection = () => {
@@ -151,7 +98,7 @@ export default () => {
     <View style={[flexPage, backgroundStyle]}>
       <Text style={styles.title}>Home</Text>
 
-      {settingSection()}
+      <Settings isDark={isDark} />
 
       {searchSection()}
 

@@ -38,4 +38,17 @@ export const styles = ScaledSheet.create({
     fontStyle: 'italic',
     fontSize: '12@ms',
   },
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  body: {
+    alignItems: 'center',
+  },
+  block: {
+    height: 100,
+    width: 100,
+    backgroundColor: 'black',
+    marginBottom: 30,
+  },
 });
