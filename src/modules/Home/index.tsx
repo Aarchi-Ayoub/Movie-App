@@ -3,16 +3,26 @@ import {View, Text, FlatList} from 'react-native';
 import {useQuery} from 'react-query';
 import Config from 'react-native-config';
 import FlashMessage, {showMessage} from 'react-native-flash-message';
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 
 // styles
-import {flexPage} from '../../common/styles/styles';
+import {flexPage, width} from '../../common/styles/styles';
 import {styles} from './styles';
+
 // Context
 import {AppThemeContext} from '../../provider/theme';
+
 // Comp
 import SearchBar from '../../components/SearchBar';
 import Loader from '../../components/Loader';
 import {Poster} from '../../components/Poster';
+
 // utils
 import {request} from '../../utils/interceptor';
 import Settings from '../../components/Settings';
@@ -34,6 +44,7 @@ export default () => {
   const {backgroundStyle, isDark} = useContext(AppThemeContext);
 
   /** Local */
+  const scrollY = useSharedValue(0);
 
   //State
   const [title, setTitle] = useState<string | null>(null);
@@ -56,6 +67,54 @@ export default () => {
     () => fetchMovies(title, page),
   );
 
+  /** Animations */
+  const scrollHandler = useAnimatedScrollHandler(event => {
+    scrollY.value = event.contentOffset.y;
+  });
+
+  const headerStyles = useAnimatedStyle(() => {
+    return {
+      width: interpolate(
+        scrollY.value,
+        [10, 400],
+        [350, 50],
+        Extrapolation.CLAMP,
+      ),
+      marginBottom: interpolate(
+        scrollY.value,
+        [0, 30],
+        [20, 10],
+        Extrapolation.CLAMP,
+      ),
+      // marginTop: interpolate(
+      //   scrollY.value,
+      //   [0, 100, 200],
+      //   [20, 10, 5],
+      //   Extrapolation.CLAMP,
+      // ),
+      marginLeft: interpolate(
+        scrollY.value,
+        [0, 100, 1000],
+
+        [45, -width / 4.5, -width * 2.5],
+        Extrapolation.CLAMP,
+      ),
+      alignSelf: 'center',
+    };
+  });
+
+  const textStyles = useAnimatedStyle(() => {
+    return {
+      fontSize: interpolate(
+        scrollY.value,
+        [0, 20],
+        [4, 8],
+        Extrapolation.CLAMP,
+      ),
+    };
+  });
+  /** Animations */
+
   // Search comp
   const searchSection = () => {
     return (
@@ -64,6 +123,8 @@ export default () => {
         onChange={typeTitle}
         onClear={clearField}
         onSubmit={searchTitle}
+        animatedStyle={headerStyles}
+        animatedText={textStyles}
       />
     );
   };
@@ -103,7 +164,7 @@ export default () => {
       {searchSection()}
 
       {isLoading && <Loader />}
-      <FlatList
+      <Animated.FlatList
         extraData={data?.data}
         data={data?.data?.Search}
         style={styles.list}
@@ -115,6 +176,8 @@ export default () => {
         onEndReachedThreshold={0.5}
         onEndReached={() => setPage(page + 1)}
         ListEmptyComponent={renderEmptyComp}
+        onScroll={scrollHandler}
+        bounces={false}
       />
 
       {isError && FlashMessageComponent()}

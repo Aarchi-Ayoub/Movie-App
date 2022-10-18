@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, TextInput, Platform, TouchableOpacity, Image} from 'react-native';
+import Animated from 'react-native-reanimated';
 import {styles} from './styles';
 
 type Props = {
@@ -7,12 +8,24 @@ type Props = {
   onChange: any;
   onClear: any;
   onSubmit: any;
+  animatedStyle: any;
+  animatedText: any;
 };
-export default ({value, onChange, onClear, onSubmit}: Props) => {
+export default ({
+  value,
+  onChange,
+  onClear,
+  onSubmit,
+  animatedStyle,
+  animatedText,
+}: Props) => {
+  console.log('====================================');
+  console.log(animatedStyle);
+  console.log('====================================');
   return (
-    <View style={styles.content}>
+    <Animated.View style={[styles.content, animatedStyle]}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, animatedText]}
         value={value || ''}
         maxLength={25}
         placeholder={'Movie title..'}
@@ -31,6 +44,6 @@ export default ({value, onChange, onClear, onSubmit}: Props) => {
           />
         </TouchableOpacity>
       )}
-    </View>
+    </Animated.View>
   );
 };
