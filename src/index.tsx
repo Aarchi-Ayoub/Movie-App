@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
-import {AppState, AppStateStatus, Platform} from 'react-native';
+import {AppState, AppStateStatus, LogBox, Platform} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {focusManager, QueryClient, QueryClientProvider} from 'react-query';
 import AppThemeProvider from './provider/theme';
 import Router from './router';
 
-export default props => {
+export default (): JSX.Element => {
   // Create a client
   const queryClient = new QueryClient();
 
@@ -17,7 +17,7 @@ export default props => {
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', onAppStateChange);
-
+    LogBox.ignoreAllLogs();
     return () => subscription.remove();
   }, []);
 
